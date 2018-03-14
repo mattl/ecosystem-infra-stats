@@ -26,6 +26,16 @@ if GH_AUTH is None:
     print('Get your token from here: <https://github.com/settings/tokens>')
     exit()
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def get_latencies(prs, runs):
     """For each PR, find the earliest run for each browser that included that PR,
     and calucate the latencies between the PR and the runs."""
@@ -39,15 +49,20 @@ def get_latencies(prs, runs):
         for run in runs:
                   
             if run['revision'] == foo:
-                print ('SHA: ' + 'https://wpt.fyi/?sha=' + foo)
+                #print ('SHA: ' + 'https://wpt.fyi/?sha=' + foo)
                 #print (pr['created_at'] - run['created_at'])
                 prtime = datetime.strptime(pr['created_at'], '%Y-%m-%dT%H:%M:%SZ')
 #                prtime = datetime.strptime(pr['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
                 runtime = datetime.strptime(run['created_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
-                print (runtime - prtime)
-                print (" ")
-                print (" ")
-                print (" ")
+                #print (" PR made at: " + prtime.strftime("%Y-%m-%d %H:%M"))
+                #print ("Run made at: " + runtime.strftime("%Y-%m-%d %H:%M"))
+                age = runtime - prtime
+                rounded = round(age.total_seconds() / 3600,2)
+                if rounded > 12:
+                    print (foo + " " + bcolors.FAIL + str(rounded) + " hours" + bcolors.ENDC)
+                else: 
+                    print (foo + " " + bcolors.HEADER + str(rounded) + " hours" + bcolors.ENDC)
+                    
                 
         #cars = [run for run in runs if run['revision'] == foo]
 
